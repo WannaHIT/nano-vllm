@@ -4,7 +4,7 @@ from transformers import AutoTokenizer
 
 
 def main():
-    path = os.path.expanduser("~/huggingface/Qwen3-0.6B/")
+    path = os.path.expanduser("/home/litao/LLM/model/Qwen3_0.6B")
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)
 
@@ -12,6 +12,7 @@ def main():
     prompts = [
         "introduce yourself",
         "list all prime numbers within 100",
+        "which one is bigger between 3.11 and 3.9",
     ]
     prompts = [
         tokenizer.apply_chat_template(

@@ -8,7 +8,7 @@ from nanovllm.engine.block_manager import BlockManager
 class Scheduler:
 
     def __init__(self, config: Config):
-        self.max_num_seqs = config.max_num_seqs
+        self.max_num_seqs = config.max_num_seqs             
         self.max_num_batched_tokens = config.max_num_batched_tokens
         self.eos = config.eos
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
@@ -26,9 +26,9 @@ class Scheduler:
         scheduled_seqs = []
         num_seqs = 0
         num_batched_tokens = 0
-        while self.waiting and num_seqs < self.max_num_seqs:
+        while self.waiting and num_seqs < self.max_num_seqs: # 预填充阶段 确保不超过最大序列数
             seq = self.waiting[0]
-            if num_batched_tokens + len(seq) > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq):
+            if num_batched_tokens + len(seq) > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq): # 确保既不超过序列数量限制，也不超过 token 数量限制和内存限制
                 break
             num_seqs += 1
             self.block_manager.allocate(seq)
@@ -41,7 +41,7 @@ class Scheduler:
             return scheduled_seqs, True
 
         # decode
-        while self.running and num_seqs < self.max_num_seqs:
+        while self.running and num_seqs < self.max_num_seqs: # 解码阶段：同样限制并发序列数
             seq = self.running.popleft()
             while not self.block_manager.can_append(seq):
                 if self.running:
