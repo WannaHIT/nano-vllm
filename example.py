@@ -6,7 +6,7 @@ from transformers import AutoTokenizer
 def main():
     path = os.path.expanduser("/home/litao/LLM/model/Qwen3_0.6B")
     tokenizer = AutoTokenizer.from_pretrained(path)
-    llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)
+    llm = LLM(path, enforce_eager=True, tensor_parallel_size=1) # enforce_eager算子相关，方便调试
 
     sampling_params = SamplingParams(temperature=0.6, max_tokens=256)
     prompts = [
@@ -17,7 +17,7 @@ def main():
     prompts = [
         tokenizer.apply_chat_template(
             [{"role": "user", "content": prompt}],
-            tokenize=False,
+            tokenize=False,                         # False暂时不转化为id，是文本形式而不是id 的int 序列
             add_generation_prompt=True,
             enable_thinking=True
         )

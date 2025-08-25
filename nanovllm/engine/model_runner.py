@@ -31,7 +31,7 @@ class ModelRunner:
         self.model = Qwen3ForCausalLM(hf_config)
         load_model(self.model, config.model)
         self.sampler = Sampler()
-        self.warmup_model()
+        self.warmup_model()     # warm up 之后就可以知道模型实际大小，从而接下来分配kv cache
         self.allocate_kv_cache()
         if not self.enforce_eager:
             self.capture_cudagraph()
